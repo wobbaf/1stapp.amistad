@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">1stapp</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_new">newActivity</string>
+    <string name="label">Lista</string>
+    <string name="dialog_title">GMan</string>
+    <string name="ok">TAK</string>
+    <string name="cancel">NIE</string>
+</resources>

@@ -21,6 +21,12 @@
             android:textSize="20sp"
             android:layout_gravity="center"
             android:id="@+id/Listtoolbar_title" />
+    <ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content"
+                 android:layout_gravity="end"
+                 android:src="@drawable/ic_plus"
+                 android:id="@+id/addButton"
+                 android:background="@color/colorTransparent"
+                 android:layout_marginEnd="5dp" android:layout_marginRight="5dp"/>
 </android.support.v7.widget.Toolbar>
 
 <LinearLayout

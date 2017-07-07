@@ -25,6 +25,7 @@ import com.example.maciu.a1stapp.list.activity.ListActivity;
 import com.example.maciu.a1stapp.object.Card;
 import com.example.maciu.a1stapp.R;
 import com.example.maciu.a1stapp.detail.activity.DetailActivity;
+import com.example.maciu.a1stapp.object.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  * Created by maciu on 03.07.2017.
  */
 public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
-    private List<Card> mDataset;
+    private List<Route> mDataset;
     private Context context;
     private Activity listActivity;
     private List<Bitmap> loadedPictures = null;
@@ -56,21 +57,21 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         @OnClick(R.id.linLay)
         public void onClick() {
             Location location = new Location("passedLocation");
-            if (mDataset.get(getAdapterPosition()).getLatitude() != null) {
-                location.setLatitude(mDataset.get(getAdapterPosition()).getLatitude());
-                location.setLongitude(mDataset.get(getAdapterPosition()).getLongitude());
+            if (mDataset.get(getAdapterPosition()).getLocation() != null) {
+                location.setLatitude(mDataset.get(getAdapterPosition()).getLocation().latitude);
+                location.setLongitude(mDataset.get(getAdapterPosition()).getLocation().longitude);
             }
             if(ListActivity.isPortrait(context)) {
-                DetailActivity.start(context, mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getDistance(), location);
+                DetailActivity.start(context, mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getLocation().latitude, location);
             }
             else{
                 //Glide.with(context).load(URL_PHOTO_PREFIX + mDataset.get(getAdapterPosition()).getThumbId()).into(imageView);
-                ((ListActivity)listActivity).addDetailsSplit(mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getDistance());
+                ((ListActivity)listActivity).addDetailsSplit(mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getLocation().latitude);
             }
         }
     }
 
-    public ListAdapter(Context c, List<Card> myDataset, Activity passedActivity) {
+    public ListAdapter(Context c, List<Route> myDataset, Activity passedActivity) {
         mDataset = new ArrayList<>();
         mDataset = myDataset;
         context = c;
@@ -85,11 +86,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 .inflate(R.layout.card_layout, parent, false);
         final ViewHolder holder = new ViewHolder(view);
         if (mDataset != null && loadedPictures.size() < mDataset.size()) {
-            final Card card = mDataset.get(viewType);
+            final Route card = mDataset.get(viewType);
             holder.mTextView.setText(card.getName());
             holder.mTextView.setShadowLayer(5, 5, 2, Color.GRAY);
             holder.mTextView.setAllCaps(true);
-            holder.mDistView.setText((card.getDistance().toString()) + " km");
+            holder.mDistView.setText((card.getLocation().latitude) + " km");
             holder.mDistView.setShadowLayer(5, 5, 2, Color.GRAY);
             holder.mDistView.setAllCaps(true);
             Glide.with(context).load(URL_PHOTO_PREFIX + card.getThumbId().toString()).asBitmap().centerCrop().override(200, 200)

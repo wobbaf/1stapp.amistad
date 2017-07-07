@@ -5,7 +5,7 @@
                 android:layout_height="match_parent"
                 tools:context="com.example.maciu.a1stapp.list.activity.ListActivity"
                 tools:showIn="@layout/activity_list"
-                android:paddingTop="55dp">
+                >
     <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

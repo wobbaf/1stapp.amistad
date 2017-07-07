@@ -12,25 +12,31 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import com.example.maciu.a1stapp.list.activity.ListActivity;
 import com.example.maciu.a1stapp.list.adapter.ListAdapter;
 import com.example.maciu.a1stapp.object.Card;
 import com.example.maciu.a1stapp.R;
+import com.example.maciu.a1stapp.object.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.example.maciu.a1stapp.detail.fragment.GoogleMapsFragment.MY_PERMISSIONS_REQUEST_LOCATION;
+import static com.example.maciu.a1stapp.list.activity.ListActivity.isPortrait;
 
 public class ListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
-    private List<Card> localList;
+    private List<Route> localList;
 
     @BindView(R.id.swiperefresh)
     SwipeRefreshLayout swipeRefreshLayout;
+
+    @BindView(R.id.fragment_main)
+    FrameLayout frameLayout;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
@@ -43,7 +49,7 @@ public class ListFragment extends Fragment {
         return fragment;
     }
 
-    public void setValues(List<Card> list) {
+    public void setValues(List<Route> list) {
         localList = new ArrayList<>();
         this.localList = list;
     }
@@ -62,6 +68,9 @@ public class ListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_list, container, false);
         ButterKnife.bind(this,root);
+        if(isPortrait(getActivity())){
+            frameLayout.setPadding(0, (int) (55*getResources().getDisplayMetrics().density),0,0);
+        }
         mRecyclerView.setHasFixedSize(true);
         mLayoutManager = new LinearLayoutManager(root.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -72,6 +81,7 @@ public class ListFragment extends Fragment {
                     @Override
                     public void onRefresh() {
                         ((ListActivity)getActivity()).fillList();
+                        mAdapter.notifyDataSetChanged();
                     }
                 }
         );

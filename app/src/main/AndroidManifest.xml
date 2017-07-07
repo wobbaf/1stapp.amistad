@@ -13,7 +13,8 @@
             android:label="@string/label"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".list.activity.ListActivity">
+        <activity android:name=".list.activity.ListActivity"
+                  android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

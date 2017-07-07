@@ -15,7 +15,8 @@
                   android:id="@+id/nameText"
                   android:textSize="20sp"
                     android:paddingTop="10dp"
-                    android:gravity="center"/>
+                    android:gravity="center"
+        android:textColor="@android:color/black"/>
         <ImageView android:layout_width="wrap_content" android:layout_height="wrap_content"
                    android:layout_gravity="center_vertical"
                    android:id="@+id/iView"

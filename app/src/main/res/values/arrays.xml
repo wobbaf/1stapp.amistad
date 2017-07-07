@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="sort_array">
+        <item>Sort by name</item>
+        <item>Sort by distance</item>
+    </string-array>
+</resources>

@@ -13,6 +13,14 @@
             android:label="@string/label"
             android:supportsRtl="true"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        <activity
+                android:name=".list.activity.SplashActivity"
+                android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".list.activity.ListActivity"
                   android:windowSoftInputMode="adjustPan">
             <intent-filter>

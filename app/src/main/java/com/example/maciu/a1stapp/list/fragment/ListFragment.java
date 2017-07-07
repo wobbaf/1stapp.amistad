@@ -1,8 +1,6 @@
 package com.example.maciu.a1stapp.list.fragment;
 
-import android.Manifest;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,21 +13,18 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import com.example.maciu.a1stapp.R;
 import com.example.maciu.a1stapp.list.activity.ListActivity;
 import com.example.maciu.a1stapp.list.adapter.ListAdapter;
-import com.example.maciu.a1stapp.object.Card;
-import com.example.maciu.a1stapp.R;
 import com.example.maciu.a1stapp.object.Route;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.maciu.a1stapp.detail.fragment.GoogleMapsFragment.MY_PERMISSIONS_REQUEST_LOCATION;
 import static com.example.maciu.a1stapp.list.activity.ListActivity.isPortrait;
 
 public class ListFragment extends Fragment {
     private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
     private List<Route> localList;
 
     @BindView(R.id.swiperefresh)
@@ -41,7 +36,7 @@ public class ListFragment extends Fragment {
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
 
-    public static ListFragment newInstance(ArrayList initList) {
+    public static ListFragment newInstance(ArrayList<Route> initList) {
         Bundle args = new Bundle();
         ListFragment fragment = new ListFragment();
         fragment.setValues(initList);
@@ -72,7 +67,7 @@ public class ListFragment extends Fragment {
             frameLayout.setPadding(0, (int) (55*getResources().getDisplayMetrics().density),0,0);
         }
         mRecyclerView.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(root.getContext());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(root.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mAdapter = new ListAdapter(getActivity(), this.localList, getActivity());
         mRecyclerView.setAdapter(mAdapter);

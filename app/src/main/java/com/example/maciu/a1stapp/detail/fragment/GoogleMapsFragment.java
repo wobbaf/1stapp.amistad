@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.support.annotation.NonNull;
@@ -16,8 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +28,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.*;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -44,12 +44,9 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
     @BindView(R.id.mapView)
     MapView mapView;
     private GoogleMap gMap;
-    private Polyline polyline;
-    Location location = new Location("passedLocation");
-    String name;
-    protected Location mLastLocation;
-    Location currentLocation = new Location("currentLocation");
-    private LocationRequest mLocationRequest;
+    private Location location = new Location("passedLocation");
+    private String name;
+    private Location mLastLocation;
     private static final String TAG = GoogleMapsFragment.class.getName();
     private static final String ARGS_TITLE = TAG + "ARGS_TITLE";
     private static final String ARGS_LONGITUDE = TAG + "ARGS_LONGITUDE";
@@ -57,11 +54,10 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
     private long UPDATE_INTERVAL = 10 * 1000;  /* 10 secs */
     private long FASTEST_INTERVAL = 2000; /* 2 sec */
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
-    protected GoogleApiClient mGoogleApiClient;
-    private FusedLocationProviderClient mFusedLocationClient;
+    private GoogleApiClient mGoogleApiClient;
 
     @OnClick(R.id.googlemaps_select_location)
-    public void onClick() {
+    void onClick() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage("Czy chcesz wyświetlić swoją lokalizację?").setTitle(R.string.dialog_title);
         builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
@@ -71,14 +67,13 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
                     gMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
                 else{
-                    Log.e(String.valueOf(mLastLocation.getLatitude()),String.valueOf(mLastLocation.getLongitude()));
+                    Log.e("LastLocation in GMF", "= null");
                 }
             }
         });
-
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                // User cancelled the dialog
+                Log.e("No location of", "user");
             }
         });
         AlertDialog dialog = builder.create();
@@ -86,7 +81,6 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
     }
 
     public GoogleMapsFragment() {
-        // Required empty public constructor
     }
 
     public static GoogleMapsFragment newInstance(Location startLocation, String name) {
@@ -107,7 +101,6 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mFusedLocationClient = getFusedLocationProviderClient(this.getActivity());
         buildGoogleApiClient();
     }
 
@@ -119,7 +112,6 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
         buildGoogleApiClient();
         startLocationUpdates();
         ButterKnife.bind(this, root);
-        mFusedLocationClient = getFusedLocationProviderClient(getActivity());
         location.setLongitude(getArguments().getDouble(ARGS_LONGITUDE, 0));
         location.setLatitude(getArguments().getDouble(ARGS_LATITUDE, 0));
         name = getArguments().getString(ARGS_TITLE);
@@ -135,17 +127,18 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
                 gMap.addMarker(new MarkerOptions().position(loc).title(name));
                 gMap.addPolyline(new PolylineOptions().add(loc,new LatLng(50.056926,19.932781)).width(5).color(Color.BLACK));
                 if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
+                    Log.e("No permissions granted", "Location");
+                }else {
+                    getLastLocation();
                 }
-                getLastLocation();
             }
         });
         return root;
     }
 
-    protected void startLocationUpdates() {
+    private void startLocationUpdates() {
 
-        mLocationRequest = new LocationRequest();
+        LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(UPDATE_INTERVAL);
         mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
@@ -169,7 +162,7 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
                 Looper.myLooper());
     }
 
-    public void onLocationChanged(Location location) {
+    private void onLocationChanged(Location location) {
         // New location has now been determined
         String msg = "Updated Location: " +
                 Double.toString(location.getLatitude()) + "," +
@@ -180,7 +173,7 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
         gMap.addMarker(new MarkerOptions().position(latLng).title("Your position"));
     }
 
-    public void getLastLocation() {
+    private void getLastLocation() {
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this.getActivity());
 
         if (ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -204,7 +197,7 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
                 });
     }
 
-    protected synchronized void buildGoogleApiClient() {
+    private synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

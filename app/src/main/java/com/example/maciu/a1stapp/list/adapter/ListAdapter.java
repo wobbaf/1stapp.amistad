@@ -1,7 +1,6 @@
 package com.example.maciu.a1stapp.list.adapter;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -10,9 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -20,11 +17,9 @@ import butterknife.OnClick;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.example.maciu.a1stapp.detail.fragment.DetailFragment;
-import com.example.maciu.a1stapp.list.activity.ListActivity;
-import com.example.maciu.a1stapp.object.Card;
 import com.example.maciu.a1stapp.R;
 import com.example.maciu.a1stapp.detail.activity.DetailActivity;
+import com.example.maciu.a1stapp.list.activity.ListActivity;
 import com.example.maciu.a1stapp.object.Route;
 
 import java.util.ArrayList;
@@ -39,7 +34,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
     private Activity listActivity;
     private List<Bitmap> loadedPictures = null;
     private static final String URL_PHOTO_PREFIX = "http://www.traseo.pl/zdjecia/";
-    private DetailFragment detailFragment;
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.info_text)
@@ -49,24 +44,31 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
         @BindView(R.id.dist_text)
         TextView mDistView;
 
-        public ViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
         }
 
         @OnClick(R.id.linLay)
-        public void onClick() {
+        void onClick() {
             Location location = new Location("passedLocation");
             if (mDataset.get(getAdapterPosition()).getLocation() != null) {
                 location.setLatitude(mDataset.get(getAdapterPosition()).getLocation().latitude);
                 location.setLongitude(mDataset.get(getAdapterPosition()).getLocation().longitude);
             }
-            if(ListActivity.isPortrait(context)) {
-                DetailActivity.start(context, mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getLocation().latitude, location);
-            }
-            else{
-                //Glide.with(context).load(URL_PHOTO_PREFIX + mDataset.get(getAdapterPosition()).getThumbId()).into(imageView);
-                ((ListActivity)listActivity).addDetailsSplit(mDataset.get(getAdapterPosition()).getName(), mDataset.get(getAdapterPosition()).getThumbId(), mDataset.get(getAdapterPosition()).getLocation().latitude);
+            if (ListActivity.isPortrait(context)) {
+                DetailActivity.start(context,
+                        mDataset.get(getAdapterPosition()).getName(),
+                        mDataset.get(getAdapterPosition()).getThumbId(),
+                        mDataset.get(getAdapterPosition()).getDistance(),
+                        location,
+                        mDataset.get(getAdapterPosition()).getScore());
+            } else {
+                ((ListActivity) listActivity).addDetailsSplit
+                        (mDataset.get(getAdapterPosition()).getName(),
+                                mDataset.get(getAdapterPosition()).getThumbId(),
+                                mDataset.get(getAdapterPosition()).getDistance(),
+                                mDataset.get(getAdapterPosition()).getScore());
             }
         }
     }
@@ -90,10 +92,11 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
             holder.mTextView.setText(card.getName());
             holder.mTextView.setShadowLayer(5, 5, 2, Color.GRAY);
             holder.mTextView.setAllCaps(true);
-            holder.mDistView.setText((card.getLocation().latitude) + " km");
+            holder.mDistView.setText((card.getDistance()) + " km");
             holder.mDistView.setShadowLayer(5, 5, 2, Color.GRAY);
             holder.mDistView.setAllCaps(true);
-            Glide.with(context).load(URL_PHOTO_PREFIX + card.getThumbId().toString()).asBitmap().centerCrop().override(200, 200)
+            Glide.with(context).load(URL_PHOTO_PREFIX +
+                    card.getThumbId().toString()).asBitmap().centerCrop().override(200, 200)
                     .into(new SimpleTarget<Bitmap>() {
                         @Override
                         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {

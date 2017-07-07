@@ -8,4 +8,6 @@
     <color name="selectedTabColor">#1964a4</color>
     <color name="toolbarColor">#1964a4</color>
     <color name="unselectedTabColor">#07589e</color>
+    <color name="dark_blue">#0b265c</color>
+    <color name="colorRed">#b40a0a</color>
 </resources>

@@ -9,4 +9,5 @@
     <string name="ok">TAK</string>
     <string name="cancel">NIE</string>
     <string name="Dodaj_nazwe">Dodaj nazwe</string>
+    <string name="local_data">Pobierz dane lokalnie</string>
 </resources>

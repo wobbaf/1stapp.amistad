@@ -68,7 +68,7 @@ public class RouteDBHelper extends SQLiteOpenHelper {
         values.put(COLUMN_NAME_NAME, routes.getName());
         values.put(COLUMN_NAME_THUMBID, routes.getThumbId());
         values.put(COLUMN_NAME_LOCATION_LATITUDE, routes.getLocation().latitude);
-        values.put(COLUMN_NAME_LOCATION_LATITUDE, routes.getLocation().longitude);
+        values.put(COLUMN_NAME_LOCATION_LONGITUDE, routes.getLocation().longitude);
         try {
             db.insertOrThrow(TABLE_NAME, null, values);
         } catch (SQLiteConstraintException e) {

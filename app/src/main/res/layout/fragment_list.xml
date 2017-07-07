@@ -11,6 +11,6 @@
             android:id="@+id/swiperefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-    <include layout="@layout/content_list"/>
+        <include layout="@layout/content_list"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 </FrameLayout>

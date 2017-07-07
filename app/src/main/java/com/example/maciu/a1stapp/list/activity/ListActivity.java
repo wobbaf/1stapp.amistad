@@ -52,7 +52,7 @@ public class ListActivity extends AppCompatActivity {
     private static final String URL_PREFIX = "http://www.traseo.pl/";
     private static final String BUNDLE_TAG = "BUNDLE_TAG";
 
-    public static void start(Context context, String name, double longitude, double latitude, double distance, double score, String action) {
+    public static void start(Context context, String name, double latitude, double longitude, double distance, double score, String action) {
         Intent intent = new Intent(context, ListActivity.class);
         intent.setAction(action);
         intent.putExtra(ARGS_TITLE, name);
@@ -140,6 +140,7 @@ public class ListActivity extends AppCompatActivity {
         }
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.navdraw_row,
                 R.id.navdrawtext, mSortTitles));
+        mDrawerLayout.setBackgroundColor(R.color.dark_blue);
 
         fragmentTransaction.replace(R.id.activity_main, listFragment);
         fragmentTransaction.commit();
@@ -157,18 +158,24 @@ public class ListActivity extends AppCompatActivity {
                                         intent.getDoubleExtra(ARGS_LONGITUDE, 0)),
                                 intent.getDoubleExtra(ARGS_DISTANCE, 0),
                                 intent.getDoubleExtra(ARGS_SCORE, 0)))) {
+
+                    Log.e(String.valueOf(intent.getDoubleExtra(ARGS_LATITUDE,
+                            0)), String.valueOf(intent.getDoubleExtra(ARGS_LONGITUDE,
+                            0)));
                     addToAPI(new Route(intent.getStringExtra(ARGS_TITLE),
                             12341,
                             new LatLng(intent.getDoubleExtra(ARGS_LATITUDE,
                                     0), intent.getDoubleExtra(ARGS_LONGITUDE,
                                     0)), intent.getDoubleExtra(ARGS_DISTANCE, 0),
-                            intent.getIntExtra(ARGS_SCORE, 0)));
+                            intent.getDoubleExtra(ARGS_SCORE, 0)));
                 }
-                fillList();
             }
+            fillList();
         } else {
             routesList = savedInstanceState.getParcelableArrayList(BUNDLE_TAG);
-            fillList();
+            mRoutes = convertListToRoutes(routesList);
+            passToFragment(mRoutes);
+            //fillList();
         }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);

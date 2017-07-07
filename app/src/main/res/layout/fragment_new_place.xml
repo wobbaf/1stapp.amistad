@@ -8,10 +8,12 @@
               android:layout_height="0px"
               android:layout_weight="1"
               android:textColor="@color/colorWhite"
-              android:id="@+id/getName" android:inputType="text"
+              android:id="@+id/getName"
               android:hint="@string/Dodaj_nazwe"
-                android:textColorHint="@color/colorWhite"
-    android:shadowColor="@color/colorWhite"/>
+              android:textColorHint="@color/colorWhite"
+              android:shadowColor="@color/colorWhite"
+              android:imeOptions="actionDone"
+              android:inputType="textCapWords"/>
     <RelativeLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="10">
         <com.google.android.gms.maps.MapView
                 android:id="@+id/mapView"

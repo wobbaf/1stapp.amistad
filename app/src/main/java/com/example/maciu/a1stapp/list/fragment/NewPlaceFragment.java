@@ -1,6 +1,7 @@
 package com.example.maciu.a1stapp.list.fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -8,14 +9,18 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import com.example.maciu.a1stapp.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,6 +45,21 @@ public class NewPlaceFragment extends android.support.v4.app.Fragment implements
     MapView mapView;
     @BindView(R.id.getName)
     EditText editText;
+    @OnEditorAction(R.id.getName)
+    public boolean onEditorAction(EditText v, int actionId, KeyEvent event) {
+        // TODO Auto-generated method stub
+
+        if ((actionId== EditorInfo.IME_ACTION_DONE )   )
+        {
+            //Toast.makeText(getActivity(), "call",45).show();
+            // hide virtual keyboard
+            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
+            return true;
+        }
+        return false;
+
+    }
     private GoogleMap gMap;
     private Marker marker;
     private Location mLastLocation;
@@ -109,6 +129,7 @@ public class NewPlaceFragment extends android.support.v4.app.Fragment implements
                     public void onMapClick(LatLng point) {
                         mMap.clear();
                         marker = mMap.addMarker(new MarkerOptions().position(point));
+                        Log.e(String.valueOf(marker.getPosition().latitude), String.valueOf(marker.getPosition().longitude));
                     }
                 });
                 gMap = mMap;

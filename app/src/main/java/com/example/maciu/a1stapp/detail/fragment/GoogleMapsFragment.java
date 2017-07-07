@@ -163,14 +163,12 @@ public class GoogleMapsFragment extends android.support.v4.app.Fragment implemen
     }
 
     private void onLocationChanged(Location location) {
-        // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this.getActivity(), msg, Toast.LENGTH_SHORT).show();
-        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+       // LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         mLastLocation = location;
-        gMap.addMarker(new MarkerOptions().position(latLng).title("Your position"));
+//        if(gMap != null) {
+//            gMap.clear();
+//            gMap.addMarker(new MarkerOptions().position(latLng).title("Your position"));
+//        }
     }
 
     private void getLastLocation() {

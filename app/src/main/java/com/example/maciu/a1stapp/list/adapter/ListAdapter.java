@@ -57,7 +57,7 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ViewHolder> {
                 location.setLongitude(mDataset.get(getAdapterPosition()).getLocation().longitude);
             }
             if (ListActivity.isPortrait(context)) {
-                DetailActivity.start(context,
+                DetailActivity.start(listActivity, context,
                         mDataset.get(getAdapterPosition()).getName(),
                         mDataset.get(getAdapterPosition()).getThumbId(),
                         mDataset.get(getAdapterPosition()).getDistance(),

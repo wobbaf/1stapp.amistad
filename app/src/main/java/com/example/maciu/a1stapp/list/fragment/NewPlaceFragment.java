@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,13 +45,9 @@ public class NewPlaceFragment extends android.support.v4.app.Fragment implements
     @BindView(R.id.getName)
     EditText editText;
     @OnEditorAction(R.id.getName)
-    public boolean onEditorAction(EditText v, int actionId, KeyEvent event) {
-        // TODO Auto-generated method stub
-
+    boolean onEditorAction(EditText v, int actionId, KeyEvent event) {
         if ((actionId== EditorInfo.IME_ACTION_DONE )   )
         {
-            //Toast.makeText(getActivity(), "call",45).show();
-            // hide virtual keyboard
             InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(getView().getWindowToken(), 0);
             return true;
@@ -89,13 +84,13 @@ public class NewPlaceFragment extends android.support.v4.app.Fragment implements
                     marker.getPosition().latitude,
                     0,
                     ARGS_ACTION_ADD);
+            getFragmentManager().beginTransaction().remove(this).commitAllowingStateLoss();
         }
         else{
             this.onDetach();
         }
         }
     public NewPlaceFragment() {
-        // Required empty public constructor
     }
 
     public static NewPlaceFragment newInstance() {

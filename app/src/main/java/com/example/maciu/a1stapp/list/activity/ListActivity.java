@@ -6,18 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.*;
+import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import butterknife.*;
 import com.example.maciu.a1stapp.R;
 import com.example.maciu.a1stapp.detail.fragment.DetailFragment;
@@ -35,7 +36,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import static com.example.maciu.a1stapp.detail.fragment.GoogleMapsFragment.MY_PERMISSIONS_REQUEST_LOCATION;
 
@@ -78,8 +82,13 @@ public class ListActivity extends AppCompatActivity {
     String[] mSortTitles;
 
     @OnItemClick(R.id.left_drawer)
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Comparator comparator = null;
+    void onItemClick(int position, long id) {
+        Comparator comparator = new Comparator<Route>() {
+            @Override
+            public int compare(Route o, Route t1) {
+                return 0;
+            }
+        };
         switch (position) {
             case 0:
                 Log.e("Sort by", "name");
@@ -102,9 +111,6 @@ public class ListActivity extends AppCompatActivity {
                 break;
         }
         Collections.sort(mRoutes, comparator);
-        Log.e(mRoutes.get(0).getName(), mRoutes.get(1).getName());
-        Log.e(String.valueOf(mRoutes.get(0).getDistance()), String.valueOf(mRoutes.get(1).getDistance()));
-        Log.e(String.valueOf(mRoutes.get(2).getDistance()), String.valueOf(mRoutes.get(3).getDistance()));
         mDrawerList.setItemChecked(position, true);
         passToFragment(mRoutes);
         mDrawerLayout.closeDrawer(mDrawerList);
@@ -138,9 +144,8 @@ public class ListActivity extends AppCompatActivity {
         if (!isPortrait(this)) {
             imageButton.setVisibility(View.INVISIBLE);
         }
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.navdraw_row,
+        mDrawerList.setAdapter(new ArrayAdapter<>(this, R.layout.navdraw_row,
                 R.id.navdrawtext, mSortTitles));
-        mDrawerLayout.setBackgroundColor(R.color.dark_blue);
 
         fragmentTransaction.replace(R.id.activity_main, listFragment);
         fragmentTransaction.commit();
@@ -152,22 +157,18 @@ public class ListActivity extends AppCompatActivity {
             if (intent.getAction() != null) {
                 if (intent.getAction().equals(ARGS_ACTION_ADD) &&
                         !mRoutes.contains(new Route(intent.getStringExtra(ARGS_TITLE),
-                                12341,
-                                new LatLng(intent.getDoubleExtra(ARGS_LATITUDE,
-                                        0),
-                                        intent.getDoubleExtra(ARGS_LONGITUDE, 0)),
-                                intent.getDoubleExtra(ARGS_DISTANCE, 0),
-                                intent.getDoubleExtra(ARGS_SCORE, 0)))) {
+                                                    12341,
+                                                     new LatLng(intent.getDoubleExtra(ARGS_LATITUDE,0),
+                                                     intent.getDoubleExtra(ARGS_LONGITUDE, 0)),
+                                                     intent.getDoubleExtra(ARGS_DISTANCE, 0),
+                                                     intent.getDoubleExtra(ARGS_SCORE, 0)))) {
 
-                    Log.e(String.valueOf(intent.getDoubleExtra(ARGS_LATITUDE,
-                            0)), String.valueOf(intent.getDoubleExtra(ARGS_LONGITUDE,
-                            0)));
                     addToAPI(new Route(intent.getStringExtra(ARGS_TITLE),
-                            12341,
-                            new LatLng(intent.getDoubleExtra(ARGS_LATITUDE,
-                                    0), intent.getDoubleExtra(ARGS_LONGITUDE,
-                                    0)), intent.getDoubleExtra(ARGS_DISTANCE, 0),
-                            intent.getDoubleExtra(ARGS_SCORE, 0)));
+                                        12341,
+                                        new LatLng(intent.getDoubleExtra(ARGS_LATITUDE,0),
+                                                intent.getDoubleExtra(ARGS_LONGITUDE,0)),
+                                                intent.getDoubleExtra(ARGS_DISTANCE, 0),
+                                                intent.getDoubleExtra(ARGS_SCORE, 0)));
                 }
             }
             fillList();
@@ -175,7 +176,6 @@ public class ListActivity extends AppCompatActivity {
             routesList = savedInstanceState.getParcelableArrayList(BUNDLE_TAG);
             mRoutes = convertListToRoutes(routesList);
             passToFragment(mRoutes);
-            //fillList();
         }
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
@@ -187,10 +187,13 @@ public class ListActivity extends AppCompatActivity {
     }
 
     public void addDetailsSplit(String name, int Thumbid, double distance, double score) {
-        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        DetailFragment detailFragment = DetailFragment.newInstance(name, Thumbid, distance, score);
-        fragmentTransaction.replace(R.id.container, detailFragment);
-        fragmentTransaction.commit();
+        if(getSupportFragmentManager().findFragmentByTag(name) == null) {
+            android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.setCustomAnimations(R.anim.fadein, R.anim.fadeout);
+            DetailFragment detailFragment = DetailFragment.newInstance(name, Thumbid, distance, score);
+            fragmentTransaction.replace(R.id.container, detailFragment, name);
+            fragmentTransaction.commit();
+        }
     }
 
     @Override
@@ -319,8 +322,8 @@ public class ListActivity extends AppCompatActivity {
     }
 
     private void addToAPI(Route route) {
-//         dbHelper.dropTable();
-//         dbHelper.createDB();
+         dbHelper.dropTable();
+         dbHelper.createDB();
         dbHelper.createEntries(route);
     }
 

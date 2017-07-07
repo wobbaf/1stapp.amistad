@@ -54,6 +54,7 @@ public class ListFragment extends Fragment {
             mAdapter.notifyDataSetChanged();
         Log.e("notify", String.valueOf(localList.size()));
         FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //ft.replace(R.id.activity_main, this);
         ft.detach(this).attach(this).commit();
         }
     }
@@ -69,7 +70,7 @@ public class ListFragment extends Fragment {
         mRecyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(root.getContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
-        mAdapter = new ListAdapter(getActivity(), this.localList, getActivity());
+        mAdapter = new ListAdapter(getContext(), this.localList, getActivity());
         mRecyclerView.setAdapter(mAdapter);
         swipeRefreshLayout.setOnRefreshListener(
                 new SwipeRefreshLayout.OnRefreshListener() {

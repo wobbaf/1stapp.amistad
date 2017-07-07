@@ -1,5 +1,8 @@
 package com.example.maciu.a1stapp.detail.activity;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -40,7 +43,7 @@ public class DetailActivity extends AppCompatActivity {
     private static final String ARGS_SCORE = TAG + "ARGS_SCORE";
     private static Location localLocation = new Location("passedLocation");
 
-    public static void start(Context context, String title, int picture, double distance, Location startLocation, double score) {
+    public static void start(Activity activity, Context context, String title, int picture, double distance, Location startLocation, double score) {
         Intent intent = new Intent(context, DetailActivity.class);
         intent.putExtra(ARGS_TITLE, title);
         intent.putExtra(ARGS_PICTURE, picture);
@@ -48,7 +51,9 @@ public class DetailActivity extends AppCompatActivity {
         intent.putExtra(ARGS_LONGITUDE, startLocation.getLongitude());
         intent.putExtra(ARGS_LATITUDE, startLocation.getLatitude());
         intent.putExtra(ARGS_SCORE, score);
-        context.startActivity(intent);
+        ActivityOptions options =
+                ActivityOptions.makeCustomAnimation(activity, R.anim.fadein, R.anim.fadeout);
+        context.startActivity(intent, options.toBundle());
     }
 
     @Override
@@ -56,8 +61,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         ButterKnife.bind(this);
-
-        //reding values from intent
         Intent recievedIntent = getIntent();
         String localTitle = recievedIntent.getStringExtra(ARGS_TITLE);
         int localThumbid = recievedIntent.getIntExtra(ARGS_PICTURE, 0);
@@ -101,7 +104,7 @@ public class DetailActivity extends AppCompatActivity {
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
 
-        public ViewPagerAdapter(FragmentManager manager) {
+        ViewPagerAdapter(FragmentManager manager) {
             super(manager);
         }
 
@@ -115,7 +118,7 @@ public class DetailActivity extends AppCompatActivity {
             return mFragmentList.size();
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }

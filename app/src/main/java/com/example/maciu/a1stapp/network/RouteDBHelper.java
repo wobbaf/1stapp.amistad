@@ -17,12 +17,12 @@ import java.util.List;
  */
 public class RouteDBHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME = "entry";
-    public static final String KEY_ID = "id";
-    public static final String COLUMN_NAME_NAME = "name";
-    public static final String COLUMN_NAME_THUMBID = "thumbid";
-    public static final String COLUMN_NAME_LOCATION_LONGITUDE = "location_long";
-    public static final String COLUMN_NAME_LOCATION_LATITUDE = "location_lat";
+    private static final String TABLE_NAME = "entry";
+    private static final String KEY_ID = "id";
+    private static final String COLUMN_NAME_NAME = "name";
+    private static final String COLUMN_NAME_THUMBID = "thumbid";
+    private static final String COLUMN_NAME_LOCATION_LONGITUDE = "location_long";
+    private static final String COLUMN_NAME_LOCATION_LATITUDE = "location_lat";
 
     private static final String SQL_CREATE_ENTRIES = "CREATE TABLE " +
             RouteDBHelper.TABLE_NAME + " (" +
@@ -35,8 +35,8 @@ public class RouteDBHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + RouteDBHelper.TABLE_NAME;
 
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Route.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "Route.db";
 
     public RouteDBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -72,7 +72,7 @@ public class RouteDBHelper extends SQLiteOpenHelper {
         try {
             db.insertOrThrow(TABLE_NAME, null, values);
         } catch (SQLiteConstraintException e) {
-            // Log.e("createLeague","Object "+league.getName()+"already in db");
+            e.printStackTrace();
         }
 
     }
@@ -92,6 +92,7 @@ public class RouteDBHelper extends SQLiteOpenHelper {
                 routes.add(route);
             } while (c.moveToNext());
         }
+        c.close();
         return routes;
     }
 }
